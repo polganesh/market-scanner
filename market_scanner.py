@@ -15,8 +15,6 @@ log = logging.getLogger(__name__)
 SMA_SHORT       = 50
 SMA_LONG        = 200
 LOOKBACK_WINDOW = 15
-FIB_LEVEL       = 0.618
-FIB_TOLERANCE   = 0.02
 
 USER_INSTRUMENTS = [
     # --- ENERGY & COMMODITIES ---
@@ -212,10 +210,45 @@ def detect_pullback(ticker: str, df_daily: pd.DataFrame):
     return round(daily_rsi, 2), round(weekly_rsi, 2), round(monthly_rsi, 2)
 
 
+# ── Fibonacci Retracement Logic ───────────────────────────────────────────────
+
+# Retracement zones (measured from swing HIGH down to swing LOW)
+# Level 0 = 52W High (swing high), Level 1 = 52W Low (swing low)
+# Retracement % = (High - Close) / (High - Low)
+# Zone boundaries:
+FIB_ZONES = [
+    ("0.382 – 0.500", 0.382, 0.500, "#1a6b3c"),   # deep green
+    ("0.500 – 0.618", 0.500, 0.618, "#2471a3"),   # blue
+    ("0.618 – 0.786", 0.618, 0.786, "#7d3c98"),   # purple
+]
+
+def detect_fib_zone(last_price: float, hi_52: float, lo_52: float):
+    """
+    Returns (zone_label, fib_level, zone_color) if price sits inside one of the
+    three defined retracement zones, else None.
+
+    Convention:
+        Level 0 = 52W High (top / swing high)
+        Level 1 = 52W Low  (bottom / swing low)
+        Retracement = (High - Close) / (High - Low)
+        0.382 retracement price = High - 0.382 * (High - Low)
+    """
+    rng = hi_52 - lo_52
+    if rng <= 0:
+        return None
+    retrace = (hi_52 - last_price) / rng          # 0 at high, 1 at low
+    retrace = round(retrace, 4)
+    for label, lo_bound, hi_bound, color in FIB_ZONES:
+        if lo_bound <= retrace < hi_bound:
+            return label, round(retrace, 4), color
+    return None
+
+
 # ── Main Scanner ────────────────────────────────────────────────────────────────
 
 def run_scanner():
     results = {
+        "combined":      [],   # Fib zone AND RSI pullback simultaneously
         "bullish_cross": [],
         "bearish_cross": [],
         "bullish_st":    [],
@@ -223,6 +256,9 @@ def run_scanner():
         "bullish_trend": [],
         "bearish_trend": [],
         "pullback":      [],
+        "fib_382_500":   [],
+        "fib_500_618":   [],
+        "fib_618_786":   [],
     }
 
 
@@ -245,14 +281,12 @@ def run_scanner():
             "52W Low":    round(lo_52, 2),
         }
 
-        # ── 1. Crossover (PRESERVED) ──────────────────────────────────────────
+        # ── 1. Crossover ──────────────────────────────────────────────────────
         c_type, c_date = detect_crossover(df)
         if c_type:
             row = {**row_base, "Crossover Type": c_type, "Crossover Date": c_date}
             if c_type == "Golden":
-                gl = lo_52 + (hi_52 - lo_52) * FIB_LEVEL
-                if abs(last_price - gl) / gl <= FIB_TOLERANCE:
-                    results["bullish_cross"].append(row)
+                results["bullish_cross"].append(row)
             else:
                 results["bearish_cross"].append(row)
 
@@ -294,6 +328,40 @@ def run_scanner():
             }
             results["pullback"].append(row)
 
+        # ── 5. Fibonacci Retracement Zone ────────────────────────────────────
+        fib = detect_fib_zone(last_price, hi_52, lo_52)
+        if fib:
+            fib_label, fib_level, _ = fib
+            row = {
+                "Instrument":       label,
+                "Last Price":       round(last_price, 2),
+                "52W High":         round(hi_52, 2),
+                "52W Low":          round(lo_52, 2),
+                "Fib Level":        fib_level,
+                "Retracement Zone": fib_label,
+            }
+            if   fib_label == "0.382 – 0.500":  results["fib_382_500"].append(row)
+            elif fib_label == "0.500 – 0.618":  results["fib_500_618"].append(row)
+            elif fib_label == "0.618 – 0.786":  results["fib_618_786"].append(row)
+
+        # ── 6. Combined : Fib Zone AND RSI Pullback ───────────────────────────
+        if pb and fib:
+            d_rsi, w_rsi, m_rsi = pb
+            fib_label, fib_level, _ = fib
+            # Compute raw daily RSI for "date" sorting proxy (lower = more oversold = more recent entry)
+            row = {
+                "Instrument":       label,
+                "Last Price":       round(last_price, 2),
+                "Fib Zone":         fib_label,
+                "Fib Level":        fib_level,
+                "Daily RSI":        d_rsi,
+                "Weekly RSI":       w_rsi,
+                "Monthly RSI":      m_rsi,
+                "52W High":         round(hi_52, 2),
+                "52W Low":          round(lo_52, 2),
+            }
+            results["combined"].append(row)
+
     save_html_report(results)
 
 
@@ -303,6 +371,10 @@ CSS = """<style>
   :root {
     --bull:#27ae60; --bull-lt:#eafaf1;
     --bear:#c0392b; --bear-lt:#fdedec;
+    --comb:#b7770d;  --comb-lt:#fef9e7;
+    --fib1:#1a6b3c;  --fib1-lt:#e9f7ef;
+    --fib2:#2471a3;  --fib2-lt:#eaf3fb;
+    --fib3:#7d3c98;  --fib3-lt:#f5eef8;
     --head:#2c3e50;
   }
   * { box-sizing:border-box; }
@@ -325,6 +397,10 @@ CSS = """<style>
              border-radius:5px 5px 0 0; color:white; margin-bottom:0; }
   .hdr-bull { background:var(--bull); }
   .hdr-bear { background:var(--bear); }
+  .hdr-comb { background:var(--comb); }
+  .hdr-fib1 { background:var(--fib1); }
+  .hdr-fib2 { background:var(--fib2); }
+  .hdr-fib3 { background:var(--fib3); }
 
   /* ── Tables ── */
   table { width:100%; border-collapse:collapse; font-size:12px; }
@@ -332,6 +408,10 @@ CSS = """<style>
   td    { padding:7px; border-bottom:1px solid #e5e5e5; }
   .r-bull td { background:var(--bull-lt); }
   .r-bear td { background:var(--bear-lt); }
+  .r-comb td { background:var(--comb-lt); }
+  .r-fib1 td { background:var(--fib1-lt); }
+  .r-fib2 td { background:var(--fib2-lt); }
+  .r-fib3 td { background:var(--fib3-lt); }
   tr:hover td { filter:brightness(0.95); }
 
   /* ── Badges ── */
@@ -355,12 +435,13 @@ def badge(val):
     return s
 
 
-def rows_to_table(rows: list, sort_col: str = None, row_cls: str = "") -> str:
+def rows_to_table(rows: list, sort_col: str = None, row_cls: str = "",
+                  ascending: bool = False) -> str:
     if not rows:
         return "<p class='no-sig'>No signals detected.</p>"
     df = pd.DataFrame(rows)
     if sort_col and sort_col in df.columns:
-        df = df.sort_values(sort_col, ascending=False)
+        df = df.sort_values(sort_col, ascending=ascending)
     hdrs = "".join(f"<th>{c}</th>" for c in df.columns)
     body = ""
     for _, r in df.iterrows():
@@ -383,22 +464,74 @@ def save_html_report(results: dict):
     now_str = datetime.now(est).strftime("%Y-%m-%d %H:%M %Z")
     secs    = []
 
-    # ── Section 1 : Crossover ──────────────────────────────────────────────────
+    # ── Section 1 : Combined — Fibonacci Zone AND RSI Pullback ───────────────
+    # Sorted ascending by Daily RSI (lowest RSI = most oversold = most recently
+    # confirmed pullback entry) so the freshest signals appear at the top.
     secs.append(f"""
     <div class='section'>
-      <div class='sec-title'>📈 Section 1 &mdash; Crossover Signals</div>
+      <div class='sec-title'>🎯 Section 1 &mdash; High-Conviction Pullback Entries
+        <span style='font-weight:400;font-size:13px'>
+          &nbsp;(Fibonacci Zone &amp; RSI Pullback simultaneously &nbsp;|&nbsp; sorted by lowest Daily RSI first)
+        </span>
+      </div>
       <div class='pair'>
-        {sub("hdr-bull", "✅ Bullish — Golden Crossover (Fibonacci Filtered)",
+        {sub("hdr-comb",
+             "⭐ Instruments in Fibonacci Retracement Zone WITH Daily RSI &lt; 45 "
+             "(Monthly RSI &gt;60 &amp; Weekly RSI &gt;60)",
+             rows_to_table(results["combined"], "Daily RSI", "r-comb", ascending=True))}
+      </div>
+    </div>""")
+
+    # ── Section 2 : Fibonacci Retracement Zones ───────────────────────────────
+    secs.append(f"""
+    <div class='section'>
+      <div class='sec-title'>📐 Section 2 &mdash; Fibonacci Retracement Zones
+        <span style='font-weight:400;font-size:13px'>
+          &nbsp;(52W High = Level 0 &nbsp;|&nbsp; 52W Low = Level 1 &nbsp;|&nbsp; sorted by most recently entered zone)
+        </span>
+      </div>
+      <div class='pair'>
+        {sub("hdr-fib1", "🟢 Zone 0.382 – 0.500 &nbsp;<span style='font-weight:400;font-size:11px'>(shallow retracement — strong trend)</span>",
+             rows_to_table(results["fib_382_500"], "Fib Level", "r-fib1", ascending=True))}
+        {sub("hdr-fib2", "🔵 Zone 0.500 – 0.618 &nbsp;<span style='font-weight:400;font-size:11px'>(moderate retracement — key support area)</span>",
+             rows_to_table(results["fib_500_618"], "Fib Level", "r-fib2", ascending=True))}
+      </div>
+      <div class='pair' style='margin-top:18px'>
+        {sub("hdr-fib3", "🟣 Zone 0.618 – 0.786 &nbsp;<span style='font-weight:400;font-size:11px'>(deep retracement — last major support before trend reversal)</span>",
+             rows_to_table(results["fib_618_786"], "Fib Level", "r-fib3", ascending=True))}
+      </div>
+    </div>""")
+
+    # ── Section 3 : Possible Pullback (RSI) ───────────────────────────────────
+    secs.append(f"""
+    <div class='section'>
+      <div class='sec-title'>🔄 Section 3 &mdash; Possible Pullback
+        <span style='font-weight:400;font-size:13px'>
+          &nbsp;(Monthly RSI &gt;60 &amp; Weekly RSI &gt;60 &amp; Daily RSI &lt;45)
+        </span>
+      </div>
+      <div class='pair'>
+        {sub("hdr-bull", "✅ Pullback Candidates",
+             rows_to_table(results["pullback"], "Daily RSI", "r-bull", ascending=True))}
+      </div>
+    </div>""")
+
+    # ── Section 4 : Crossover ──────────────────────────────────────────────────
+    secs.append(f"""
+    <div class='section'>
+      <div class='sec-title'>📈 Section 4 &mdash; Crossover Signals</div>
+      <div class='pair'>
+        {sub("hdr-bull", "✅ Bullish — Golden Crossover (SMA 50 crosses above SMA 200)",
              rows_to_table(results["bullish_cross"], "Crossover Date", "r-bull"))}
         {sub("hdr-bear", "❌ Bearish — Death Crossover",
              rows_to_table(results["bearish_cross"], "Crossover Date", "r-bear"))}
       </div>
     </div>""")
 
-    # ── Section 2 : Supertrend ─────────────────────────────────────────────────
+    # ── Section 5 : Supertrend ─────────────────────────────────────────────────
     secs.append(f"""
     <div class='section'>
-      <div class='sec-title'>⚡ Section 2 &mdash; Supertrend Signals (10,3)</div>
+      <div class='sec-title'>⚡ Section 5 &mdash; Supertrend Signals (10,3)</div>
       <div class='pair'>
         {sub("hdr-bull", "✅ Bullish Supertrend",
              rows_to_table(results["bullish_st"], "ST Date", "r-bull"))}
@@ -407,10 +540,10 @@ def save_html_report(results: dict):
       </div>
     </div>""")
 
-    # ── Section 3 : Up/Down Trend ──────────────────────────────────────────────
+    # ── Section 6 : Up/Down Trend ──────────────────────────────────────────────
     secs.append(f"""
     <div class='section'>
-      <div class='sec-title'>📊 Section 3 &mdash; Up / Down Trend (EMA 20 &rsaquo; 50 &rsaquo; 200)</div>
+      <div class='sec-title'>📊 Section 6 &mdash; Up / Down Trend (EMA 20 &rsaquo; 50 &rsaquo; 200)</div>
       <div class='pair'>
         {sub("hdr-bull",
              "✅ Bullish — Close &gt; EMA20 &gt; EMA50 &gt; EMA200",
@@ -418,20 +551,6 @@ def save_html_report(results: dict):
         {sub("hdr-bear",
              "❌ Bearish — Close &lt; EMA20 &lt; EMA50 &lt; EMA200",
              rows_to_table(results["bearish_trend"], "Trend Start Date", "r-bear"))}
-      </div>
-    </div>""")
-
-    # ── Section 4 : Possible Pullback ──────────────────────────────────────────
-    secs.append(f"""
-    <div class='section'>
-      <div class='sec-title'>🔄 Section 4 &mdash; Possible Pullback
-        <span style='font-weight:400;font-size:13px'>
-          &nbsp;(Monthly RSI &gt;60 &amp; Weekly RSI &gt;60 &amp; Daily RSI &lt;45)
-        </span>
-      </div>
-      <div class='pair'>
-        {sub("hdr-bull", "✅ Pullback Candidates",
-             rows_to_table(results["pullback"], "Daily RSI", "r-bull"))}
       </div>
     </div>""")
 
