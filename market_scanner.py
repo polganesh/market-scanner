@@ -1,4 +1,7 @@
 import logging
+import os
+import glob
+import yaml
 import pandas as pd
 import numpy as np
 import pandas_ta as ta
@@ -36,7 +39,10 @@ EMA_SLOW        = 200
 W200_SMA_PERIOD   = 200
 W200_UPPER_BUFFER = 0.10   # 10% ceiling above weekly SMA200
 
-USER_INSTRUMENTS = [
+# ── Default Instruments ────────────────────────────────────────────────────────
+# Used ONLY when .yaml-tickers/ folder is absent or contains no valid YAML files.
+
+_DEFAULT_INSTRUMENTS = [
     # --- ENERGY & COMMODITIES ---
     'USO', 'UNG', 'XLE', 'XOP', 'GLD', 'SLV', 'IBIT',
     # --- INDICES ETF ---
@@ -55,6 +61,89 @@ USER_INSTRUMENTS = [
     'PANW', 'GILD', 'AMT', 'NOW', 'SNPS', 'CDNS', 'CI', 'ZTS', 'SCHW',
     'PLD', 'DE', 'ISRG', 'LRCX', 'T', 'MMC', 'EL', 'MO', 'HCA', 'UBER',
 ]
+
+
+# ── YAML Ticker Loader ─────────────────────────────────────────────────────────
+
+def load_instruments() -> list:
+    """
+    Loads ticker symbols from all *.yaml / *.yml files inside the
+    '.yaml-tickers' folder located in the same directory as this script.
+
+    Supported YAML structures (all handled automatically):
+
+      # 1. Flat list
+      - AAPL
+      - MSFT
+
+      # 2. List under any top-level key
+      tickers: [AAPL, MSFT]
+
+      # 3. Nested sectors with {ticker: X, name: Y} dicts  (NDX format)
+      nasdaq_100_constituents:
+        sectors:
+          tech:
+            - { ticker: AAPL, name: "Apple Inc." }
+          semis:
+            - NVDA
+
+      # 4. Any arbitrary nesting — the recursive walker handles it all.
+
+    Returns:
+      Deduplicated, uppercased, sorted list of ticker strings.
+      Falls back to _DEFAULT_INSTRUMENTS if the folder is absent,
+      empty, or yields no valid tickers after parsing.
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    yaml_dir   = os.path.join(script_dir, ".yaml-tickers")
+    yaml_files = []
+
+    if os.path.isdir(yaml_dir):
+        yaml_files = (glob.glob(os.path.join(yaml_dir, "*.yaml")) +
+                      glob.glob(os.path.join(yaml_dir, "*.yml")))
+
+    if not yaml_files:
+        log.info("No YAML files found in .yaml-tickers/ — using default instrument list "
+                 f"({len(_DEFAULT_INSTRUMENTS)} tickers).")
+        return list(_DEFAULT_INSTRUMENTS)
+
+    tickers = set()
+
+    def _extract(node):
+        """Recursively pull ticker strings out of any YAML node."""
+        if isinstance(node, str):
+            stripped = node.strip().upper()
+            if stripped:
+                tickers.add(stripped)
+        elif isinstance(node, dict):
+            # {ticker: AAPL, name: ...} dict → use the 'ticker' value only
+            if "ticker" in node:
+                _extract(node["ticker"])
+            else:
+                for v in node.values():
+                    _extract(v)
+        elif isinstance(node, list):
+            for item in node:
+                _extract(item)
+
+    for fpath in sorted(yaml_files):
+        try:
+            with open(fpath, "r", encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+            if data is not None:
+                _extract(data)
+            log.info(f"Loaded tickers from: {os.path.basename(fpath)}")
+        except Exception as e:
+            log.warning(f"Could not parse {os.path.basename(fpath)}: {e}")
+
+    if not tickers:
+        log.warning("YAML files found but no tickers extracted — using default instrument list.")
+        return list(_DEFAULT_INSTRUMENTS)
+
+    loaded = sorted(tickers)
+    log.info(f"Total unique tickers loaded from YAML: {len(loaded)}")
+    return loaded
+
 
 # ── Data Helpers ───────────────────────────────────────────────────────────────
 
@@ -467,7 +556,11 @@ def run_scanner():
         "fib_618_786":   [],
     }
 
-    for ticker in USER_INSTRUMENTS:
+    # ── Load instruments from .yaml-tickers/ or fall back to defaults ─────────
+    instruments = load_instruments()
+    log.info(f"Scanner starting — {len(instruments)} instruments to process.")
+
+    for ticker in instruments:
         log.info(f"Scanning {ticker}...")
         df, full_name, mktcap, ipo_year = fetch_data(ticker)
         if df is None or len(df) < SMA_LONG:
