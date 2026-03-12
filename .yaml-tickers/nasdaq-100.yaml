@@ -1,0 +1,126 @@
+nasdaq_100_constituents:
+  description: "NASDAQ 100 Constituents (NDX) — Cleaned & Deduplicated | Valid for Yahoo Finance Tickers"
+  sectors:
+    magnificent_seven_and_platforms:
+      - { ticker: AAPL,  name: "Apple Inc." }
+      - { ticker: MSFT,  name: "Microsoft Corp." }
+      - { ticker: NVDA,  name: "NVIDIA Corp." }
+      - { ticker: GOOGL, name: "Alphabet Inc. (Class A)" }
+      - { ticker: GOOG,  name: "Alphabet Inc. (Class C)" }
+      - { ticker: AMZN,  name: "Amazon.com Inc." }
+      - { ticker: META,  name: "Meta Platforms, Inc." }
+      - { ticker: TSLA,  name: "Tesla, Inc." }
+    semiconductors_and_hardware:
+      - { ticker: AMD,   name: "Advanced Micro Devices" }
+      - { ticker: AVGO,  name: "Broadcom Inc." }
+      - { ticker: INTC,  name: "Intel Corp." }
+      - { ticker: QCOM,  name: "Qualcomm Inc." }
+      - { ticker: AMAT,  name: "Applied Materials" }
+      - { ticker: MU,    name: "Micron Technology" }
+      - { ticker: LRCX,  name: "Lam Research" }
+      - { ticker: KLAC,  name: "KLA Corporation" }
+      - { ticker: MRVL,  name: "Marvell Technology" }
+      - { ticker: ASML,  name: "ASML Holding (ADR)" }
+      - { ticker: ADI,   name: "Analog Devices" }
+      - { ticker: TXN,   name: "Texas Instruments" }
+      - { ticker: NXPI,  name: "NXP Semiconductors" }
+      - { ticker: ARM,   name: "Arm Holdings",          added: 2024 }
+      - { ticker: STX,   name: "Seagate Technology",    added: 2025 }
+      - { ticker: WDC,   name: "Western Digital",       added: 2025 }
+    enterprise_software_and_cloud:
+      - { ticker: ORCL,  name: "Oracle Corp." }
+      - { ticker: CRM,   name: "Salesforce, Inc." }
+      - { ticker: ADBE,  name: "Adobe Inc." }
+      - { ticker: NOW,   name: "ServiceNow, Inc." }
+      - { ticker: INTU,  name: "Intuit Inc." }
+      - { ticker: CDNS,  name: "Cadence Design Systems" }
+      - { ticker: SNPS,  name: "Synopsys, Inc." }
+      - { ticker: WDAY,  name: "Workday, Inc." }
+      - { ticker: TEAM,  name: "Atlassian" }
+      - { ticker: ADSK,  name: "Autodesk, Inc." }
+      - { ticker: ANSS,  name: "ANSYS, Inc." }
+      - { ticker: ZM,    name: "Zoom Video Communications" }
+      - { ticker: CTSH,  name: "Cognizant Technology Solutions" }
+    ai_data_and_cybersecurity:
+      - { ticker: PLTR,  name: "Palantir Technologies",      added: 2024 }
+      - { ticker: MSTR,  name: "MicroStrategy Inc.",         added: 2024 }
+      - { ticker: PANW,  name: "Palo Alto Networks" }
+      - { ticker: CRWD,  name: "CrowdStrike Holdings" }
+      - { ticker: FTNT,  name: "Fortinet, Inc." }
+      - { ticker: ZS,    name: "Zscaler, Inc." }
+      - { ticker: DDOG,  name: "Datadog, Inc." }
+      - { ticker: OKTA,  name: "Okta, Inc." }
+      - { ticker: MPWR,  name: "Monolithic Power Systems",   added: 2025 }
+    consumer_discretionary_and_retail:
+      - { ticker: COST,  name: "Costco Wholesale" }
+      - { ticker: BKNG,  name: "Booking Holdings" }
+      - { ticker: SBUX,  name: "Starbucks Corp." }
+      - { ticker: ABNB,  name: "Airbnb, Inc." }
+      - { ticker: EXPE,  name: "Expedia Group" }
+      - { ticker: ORLY,  name: "O'Reilly Automotive" }
+      - { ticker: ROST,  name: "Ross Stores, Inc." }
+      - { ticker: TSCO,  name: "Tractor Supply Co." }
+      - { ticker: EBAY,  name: "eBay Inc." }
+      - { ticker: DLTR,  name: "Dollar Tree, Inc." }
+      - { ticker: MELI,  name: "MercadoLibre, Inc." }
+      - { ticker: PDD,   name: "PDD Holdings (Temu)" }
+      - { ticker: JD,    name: "JD.com, Inc." }
+      - { ticker: BIDU,  name: "Baidu, Inc." }
+      - { ticker: SHOP,  name: "Shopify Inc.",              added: 2025 }
+      - { ticker: DASH,  name: "DoorDash, Inc." }
+      - { ticker: WMT,   name: "Walmart Inc." }
+    communication_and_media:
+      - { ticker: NFLX,  name: "Netflix, Inc." }
+      - { ticker: TMUS,  name: "T-Mobile US, Inc." }
+      - { ticker: CMCSA, name: "Comcast Corp." }
+      - { ticker: CHTR,  name: "Charter Communications" }
+      - { ticker: WBD,   name: "Warner Bros. Discovery" }
+      - { ticker: EA,    name: "Electronic Arts" }
+      - { ticker: TTWO,  name: "Take-Two Interactive" }
+      - { ticker: NTES,  name: "NetEase, Inc." }
+    consumer_staples:
+      - { ticker: PEP,   name: "PepsiCo, Inc." }
+      - { ticker: MDLZ,  name: "Mondelez International" }
+      - { ticker: KDP,   name: "Keurig Dr Pepper" }
+      - { ticker: KHC,   name: "Kraft Heinz Co." }
+      - { ticker: MNST,  name: "Monster Beverage" }
+      - { ticker: CCEP,  name: "Coca-Cola Europacific Partners" }
+    healthcare_and_biotech:
+      - { ticker: AMGN,  name: "Amgen Inc." }
+      - { ticker: GILD,  name: "Gilead Sciences" }
+      - { ticker: VRTX,  name: "Vertex Pharmaceuticals" }
+      - { ticker: REGN,  name: "Regeneron Pharmaceuticals" }
+      - { ticker: ISRG,  name: "Intuitive Surgical" }
+      - { ticker: GEHC,  name: "GE HealthCare" }
+      - { ticker: DXCM,  name: "Dexcom, Inc." }
+      - { ticker: IDXX,  name: "IDEXX Laboratories" }
+      - { ticker: ALGN,  name: "Align Technology" }
+      - { ticker: ALNY,  name: "Alnylam Pharmaceuticals",   added: 2025 }
+      - { ticker: INSM,  name: "Insmed Incorporated",       added: 2025 }
+    industrials_and_logistics:
+      - { ticker: HON,   name: "Honeywell International" }
+      - { ticker: CSCO,  name: "Cisco Systems" }
+      - { ticker: FAST,  name: "Fastenal Co." }
+      - { ticker: CTAS,  name: "Cintas Corp." }
+      - { ticker: ODFL,  name: "Old Dominion Freight Line" }
+      - { ticker: CPRT,  name: "Copart Inc." }
+      - { ticker: PCAR,  name: "PACCAR Inc." }
+      - { ticker: AXON,  name: "Axon Enterprise",           added: 2024 }
+      - { ticker: CSX,   name: "CSX Corporation" }
+      - { ticker: ADP,   name: "Automatic Data Processing" }
+      - { ticker: PAYX,  name: "Paychex, Inc." }
+      - { ticker: VRSK,  name: "Verisk Analytics" }
+      - { ticker: FER,   name: "Ferrovial SE",              added: 2025 }
+    energy_and_utilities:
+      - { ticker: CEG,   name: "Constellation Energy" }
+      - { ticker: AEP,   name: "American Electric Power" }
+      - { ticker: XEL,   name: "Xcel Energy Inc." }
+      - { ticker: EXC,   name: "Exelon Corp." }
+      - { ticker: FANG,  name: "Diamondback Energy" }
+      - { ticker: BKR,   name: "Baker Hughes Co." }
+      - { ticker: LIN,   name: "Linde PLC" }
+    financials_and_services:
+      - { ticker: PYPL,  name: "PayPal Holdings" }
+      - { ticker: ADYEY, name: "Adyen NV (OTC)" }
+      - { ticker: TRI,   name: "Thomson Reuters",           added: 2025 }
+      - { ticker: CSGP,  name: "CoStar Group" }
