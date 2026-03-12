@@ -115,6 +115,7 @@ def fetch_data(ticker: str, period: str = "2y") -> tuple:
         info = t_obj.info
         name = info.get('longName', ticker)
         mktcap = info.get('marketCap', None)
+        quote_type = info.get('quoteType', 'EQUITY')  # Added to detect ETFs
         ipo_year = "N/A"
         epoch_s = info.get('firstTradeDateEpochUtc', None)
         if epoch_s is None:
@@ -126,11 +127,11 @@ def fetch_data(ticker: str, period: str = "2y") -> tuple:
             except Exception:
                 ipo_year = "N/A"
         df = t_obj.history(period=period, auto_adjust=True)
-        if df.empty: return None, name, mktcap, ipo_year
+        if df.empty: return None, name, mktcap, ipo_year, quote_type
         df.index = pd.DatetimeIndex(df.index)
-        return df, name, mktcap, ipo_year
+        return df, name, mktcap, ipo_year, quote_type
     except Exception:
-        return None, ticker, None, "N/A"
+        return None, ticker, None, "N/A", 'EQUITY'
 
 
 def fetch_weekly_data(ticker: str) -> pd.DataFrame:
@@ -258,8 +259,9 @@ def detect_trend(df: pd.DataFrame):
     e20 = get_ema(df, EMA_FAST);
     e50 = get_ema(df, EMA_MID);
     e200 = get_ema(df, EMA_SLOW)
-    if e20 is None or e50 is None or e200 is None: return None, None, None, None, None
+    if e20 is None or e50 is None or e200 is None: return None, None, v20, v50, v200
     frame = pd.DataFrame({'Close': df['Close'], 'e20': e20, 'e50': e50, 'e200': e200}).dropna()
+    if frame.empty: return None, None, None, None, None
     last = frame.iloc[-1];
     v20 = round(float(last['e20']), 2);
     v50 = round(float(last['e50']), 2);
@@ -344,6 +346,7 @@ CSS = """<style>
     --fib2:#2471a3; --fib2-lt:#eaf3fb;
     --fib3:#7d3c98; --fib3-lt:#f5eef8;
     --w200:#0e6655; --w200-lt:#e8f8f5;
+    --etf:#6c3483;  --etf-lt:#f4ecf7;
     --head:#2c3e50;
     --adx-weak:#95a5a6;
     --adx-neutral:#2471a3;    --adx-neutral-bg:#eaf3fb;
@@ -365,6 +368,7 @@ CSS = """<style>
   .hdr-comb { background:var(--comb); }
   .hdr-st   { background:var(--st); }
   .hdr-w200 { background:var(--w200); }
+  .hdr-etf  { background:var(--etf); }
   table { width:100%; border-collapse:collapse; font-size:12px; }
   th    { background:var(--head); color:white; padding:8px 7px; text-align:left; white-space:nowrap; cursor:pointer; user-select:none; }
   td    { padding:7px; border-bottom:1px solid #e5e5e5; }
@@ -372,6 +376,7 @@ CSS = """<style>
   .r-bear td { background:var(--bear-lt); }
   .r-st td   { background:var(--st-lt); }
   .r-w200 td { background:var(--w200-lt); }
+  .r-etf td  { background:var(--etf-lt); }
   td.adx-weak    { color:var(--adx-weak) !important; font-style:italic; }
   td.adx-neutral { background:var(--adx-neutral-bg) !important; color:var(--adx-neutral) !important; font-weight:600; }
   td.adx-strong  { background:var(--adx-strong-bg) !important; color:var(--adx-strong) !important; font-weight:700; }
@@ -434,23 +439,37 @@ def run_scanner_for_group(group_name, ticker_list):
     results = {
         "w200_zone": [], "bullish_cross": [], "bearish_cross": [],
         "bullish_st": [], "bearish_st": [], "bullish_trend": [], "bearish_trend": [],
-        "pullback": [], "fib_500_618": [],
+        "pullback": [], "fib_500_618": [], "etf_ema_fall": [],
     }
 
     log.info(f"Processing group '{group_name}' ({len(ticker_list)} tickers)...")
 
     for ticker in ticker_list:
-        df, full_name, mktcap, ipo_year = fetch_data(ticker)
+        df, full_name, mktcap, ipo_year, quote_type = fetch_data(ticker)
         if df is None or len(df) < SMA_LONG: continue
 
         last_price = float(df['Close'].iloc[-1])
         hi_52 = float(df['High'].iloc[-252:].max())
         lo_52 = float(df['Low'].iloc[-252:].min())
         adx_val = get_adx(df)
+
         row_base = {
             "Instrument": f"{full_name} ({ticker})", "Last Price": round(last_price, 2),
             "ADX (14)": adx_val if adx_val is not None else "N/A", "Market Cap": format_market_cap(mktcap)
         }
+
+        # ── ETF logic: Top 20 most fallen from 20 EMA ──
+        if quote_type == 'ETF':
+            e20_series = get_ema(df, 20)
+            if e20_series is not None and not e20_series.dropna().empty:
+                e20_val = float(e20_series.iloc[-1])
+                # Negative value means price is below EMA (fallen)
+                dist_pct = round(((last_price - e20_val) / e20_val) * 100, 2)
+                results["etf_ema_fall"].append({
+                    **row_base,
+                    "EMA 20": round(e20_val, 2),
+                    "% Dist from EMA20": dist_pct
+                })
 
         # Indicators
         w200 = detect_weekly_sma200_zone(ticker, last_price)
@@ -460,7 +479,6 @@ def run_scanner_for_group(group_name, ticker_list):
         if c_type: results["bullish_cross" if c_type == "Golden" else "bearish_cross"].append(
             {**row_base, "Date": c_date})
 
-        # New Supertrend Logic Integration
         st_type, st_date = detect_supertrend_change(df)
         if st_type: results["bullish_st" if st_type == "Bullish" else "bearish_st"].append(
             {**row_base, "Flip Date": st_date})
@@ -475,8 +493,18 @@ def run_scanner_for_group(group_name, ticker_list):
         fib = detect_fib_zone(last_price, hi_52, lo_52)
         if fib and fib[0] == "0.500 - 0.618": results["fib_500_618"].append({**row_base, "Retrace": fib[1]})
 
+    # Sort ETF results by most fallen (lowest % distance) and take Top 20
+    if results["etf_ema_fall"]:
+        results["etf_ema_fall"] = sorted(results["etf_ema_fall"], key=lambda x: x["% Dist from EMA20"])[:20]
+
     report_html = f"""<!DOCTYPE html><html><head><meta charset="UTF-8">{CSS}</head><body>
     <h2>Market Scanner: {group_name.upper()}</h2>
+
+    <div class="section">
+        <div class="sec-title">Top 20 ETFs: Most Fallen from 20 EMA</div>
+        {get_table_html(results['etf_ema_fall'], 'etf-tbl', 'r-etf')}
+    </div>
+
     <div class="section"><div class="sec-title">Weekly SMA 200 Zone Filter</div>{get_table_html(results['w200_zone'], 'w200-tbl', 'r-w200')}</div>
 
     <div class="section">
