@@ -1,0 +1,158 @@
+nifty_indices_constituents:
+  description: "NIFTY 50 & NIFTY NEXT 50 Constituents — Cleaned & Deduplicated | Valid for Yahoo Finance Tickers"
+
+  nifty_50:
+    financial_services:
+      - { ticker: HDFCBANK.NS,   name: "HDFC Bank" }
+      - { ticker: ICICIBANK.NS,  name: "ICICI Bank" }
+      - { ticker: KOTAKBANK.NS,  name: "Kotak Mahindra Bank" }
+      - { ticker: AXISBANK.NS,   name: "Axis Bank" }
+      - { ticker: SBIN.NS,       name: "State Bank of India" }
+      - { ticker: BAJFINANCE.NS, name: "Bajaj Finance" }
+      - { ticker: BAJAJFINSV.NS, name: "Bajaj Finserv" }
+      - { ticker: SHRIRAMFIN.NS, name: "Shriram Finance" }
+    information_technology:
+      - { ticker: TCS.NS,        name: "Tata Consultancy Services" }
+      - { ticker: INFY.NS,       name: "Infosys" }
+      - { ticker: WIPRO.NS,      name: "Wipro" }
+      - { ticker: HCLTECH.NS,    name: "HCL Technologies" }
+      - { ticker: TECHM.NS,      name: "Tech Mahindra" }
+      - { ticker: LTIM.NS,       name: "LTIMindtree" }
+    oil_gas_and_energy:
+      - { ticker: RELIANCE.NS,   name: "Reliance Industries" }
+      - { ticker: ONGC.NS,       name: "Oil & Natural Gas Corporation" }
+      - { ticker: BPCL.NS,       name: "Bharat Petroleum" }
+      - { ticker: IOC.NS,        name: "Indian Oil Corporation" }
+      - { ticker: POWERGRID.NS,  name: "Power Grid Corporation" }
+      - { ticker: NTPC.NS,       name: "NTPC" }
+      - { ticker: ADANIGREEN.NS, name: "Adani Green Energy" }
+      - { ticker: ADANIPORTS.NS, name: "Adani Ports & SEZ" }
+    consumer_staples_and_fmcg:
+      - { ticker: HINDUNILVR.NS, name: "Hindustan Unilever" }
+      - { ticker: ITC.NS,        name: "ITC" }
+      - { ticker: NESTLEIND.NS,  name: "Nestle India" }
+      - { ticker: BRITANNIA.NS,  name: "Britannia Industries" }
+      - { ticker: TATACONSUM.NS, name: "Tata Consumer Products" }
+    automobiles:
+      - { ticker: TATAMOTORS.NS, name: "Tata Motors" }
+      - { ticker: MARUTI.NS,     name: "Maruti Suzuki" }
+      - { ticker: M&M.NS,        name: "Mahindra & Mahindra" }
+      - { ticker: BAJAJ-AUTO.NS, name: "Bajaj Auto" }
+      - { ticker: HEROMOTOCO.NS, name: "Hero MotoCorp" }
+      - { ticker: EICHERMOT.NS,  name: "Eicher Motors" }
+    pharmaceuticals:
+      - { ticker: SUNPHARMA.NS,  name: "Sun Pharmaceutical" }
+      - { ticker: DRREDDY.NS,    name: "Dr. Reddy's Laboratories" }
+      - { ticker: CIPLA.NS,      name: "Cipla" }
+      - { ticker: DIVISLAB.NS,   name: "Divi's Laboratories" }
+      - { ticker: APOLLOHOSP.NS, name: "Apollo Hospitals" }
+    metals_and_mining:
+      - { ticker: TATASTEEL.NS,  name: "Tata Steel" }
+      - { ticker: JSWSTEEL.NS,   name: "JSW Steel" }
+      - { ticker: HINDALCO.NS,   name: "Hindalco Industries" }
+      - { ticker: COALINDIA.NS,  name: "Coal India" }
+    industrials_and_capital_goods:
+      - { ticker: LT.NS,         name: "Larsen & Toubro" }
+      - { ticker: SIEMENS.NS,    name: "Siemens India" }
+      - { ticker: BEL.NS,        name: "Bharat Electronics" }
+    cement:
+      - { ticker: ULTRACEMCO.NS, name: "UltraTech Cement" }
+      - { ticker: GRASIM.NS,     name: "Grasim Industries" }
+    telecom:
+      - { ticker: BHARTIARTL.NS, name: "Bharti Airtel" }
+    paint:
+      - { ticker: ASIANPAINT.NS, name: "Asian Paints" }
+    consumer_discretionary:
+      - { ticker: TITAN.NS,      name: "Titan Company" }
+
+  nifty_next_50:
+    financial_services:
+      - { ticker: BAJAJHLDNG.NS, name: "Bajaj Holdings & Investment" }
+      - { ticker: SBILIFE.NS,    name: "SBI Life Insurance" }
+      - { ticker: HDFCLIFE.NS,   name: "HDFC Life Insurance" }
+      - { ticker: ICICIGI.NS,    name: "ICICI Lombard General Insurance" }
+      - { ticker: ICICIPRULI.NS, name: "ICICI Prudential Life Insurance" }
+      - { ticker: MUTHOOTFIN.NS, name: "Muthoot Finance" }
+      - { ticker: PFC.NS,        name: "Power Finance Corporation" }
+      - { ticker: RECLTD.NS,     name: "REC Limited" }
+      - { ticker: CHOLAFIN.NS,   name: "Cholamandalam Investment & Finance" }
+      - { ticker: INDUSINDBK.NS, name: "IndusInd Bank" }
+      - { ticker: BANDHANBNK.NS, name: "Bandhan Bank" }
+      - { ticker: IDFCFIRSTB.NS, name: "IDFC First Bank" }
+      - { ticker: PNBHOUSING.NS, name: "PNB Housing Finance" }
+    information_technology:
+      - { ticker: PERSISTENT.NS, name: "Persistent Systems" }
+      - { ticker: COFORGE.NS,    name: "Coforge" }
+      - { ticker: MPHASIS.NS,    name: "Mphasis" }
+      - { ticker: LTTS.NS,       name: "L&T Technology Services" }
+    oil_gas_and_energy:
+      - { ticker: ADANIENT.NS,   name: "Adani Enterprises" }
+      - { ticker: ADANIENSOL.NS, name: "Adani Energy Solutions" }
+      - { ticker: TATAPOWER.NS,  name: "Tata Power" }
+      - { ticker: CESC.NS,       name: "CESC" }
+      - { ticker: PETRONET.NS,   name: "Petronet LNG" }
+      - { ticker: GAIL.NS,       name: "GAIL India" }
+      - { ticker: OIL.NS,        name: "Oil India" }
+    consumer_staples_and_fmcg:
+      - { ticker: DABUR.NS,      name: "Dabur India" }
+      - { ticker: MARICO.NS,     name: "Marico" }
+      - { ticker: GODREJCP.NS,   name: "Godrej Consumer Products" }
+      - { ticker: COLPAL.NS,     name: "Colgate-Palmolive India" }
+      - { ticker: EMAMILTD.NS,   name: "Emami" }
+      - { ticker: VBL.NS,        name: "Varun Beverages" }
+      - { ticker: UNITDSPR.NS,   name: "United Spirits" }
+    automobiles_and_auto_ancillaries:
+      - { ticker: TVSMOTOR.NS,   name: "TVS Motor Company" }
+      - { ticker: BOSCHLTD.NS,   name: "Bosch India" }
+      - { ticker: MOTHERSON.NS,  name: "Samvardhana Motherson" }
+      - { ticker: BALKRISIND.NS, name: "Balkrishna Industries" }
+      - { ticker: APOLLOTYRE.NS, name: "Apollo Tyres" }
+    pharmaceuticals_and_healthcare:
+      - { ticker: TORNTPHARM.NS, name: "Torrent Pharmaceuticals" }
+      - { ticker: LUPIN.NS,      name: "Lupin" }
+      - { ticker: AUROPHARMA.NS, name: "Aurobindo Pharma" }
+      - { ticker: ALKEM.NS,      name: "Alkem Laboratories" }
+      - { ticker: MANKIND.NS,    name: "Mankind Pharma" }
+      - { ticker: MAXHEALTH.NS,  name: "Max Healthcare Institute" }
+    metals_and_mining:
+      - { ticker: VEDL.NS,       name: "Vedanta" }
+      - { ticker: NMDC.NS,       name: "NMDC" }
+      - { ticker: HINDZINC.NS,   name: "Hindustan Zinc" }
+      - { ticker: SAIL.NS,       name: "Steel Authority of India" }
+    industrials_and_capital_goods:
+      - { ticker: ABB.NS,        name: "ABB India" }
+      - { ticker: HAVELLS.NS,    name: "Havells India" }
+      - { ticker: CUMMINSIND.NS, name: "Cummins India" }
+      - { ticker: BHEL.NS,       name: "Bharat Heavy Electricals" }
+      - { ticker: HAL.NS,        name: "Hindustan Aeronautics" }
+      - { ticker: IRCTC.NS,      name: "Indian Railway Catering & Tourism" }
+    cement:
+      - { ticker: AMBUJACEM.NS,  name: "Ambuja Cements" }
+      - { ticker: ACC.NS,        name: "ACC" }
+      - { ticker: SHREECEM.NS,   name: "Shree Cement" }
+      - { ticker: RAMCOCEM.NS,   name: "Ramco Cements" }
+    consumer_discretionary_and_retail:
+      - { ticker: TRENT.NS,      name: "Trent (Tata Retail)" }
+      - { ticker: NYKAA.NS,      name: "FSN E-Commerce (Nykaa)" }
+      - { ticker: DMART.NS,      name: "Avenue Supermarts (DMart)" }
+      - { ticker: PAGEIND.NS,    name: "Page Industries" }
+      - { ticker: MANYAVAR.NS,   name: "Vedant Fashions (Manyavar)" }
+    real_estate:
+      - { ticker: DLF.NS,        name: "DLF" }
+      - { ticker: GODREJPROP.NS, name: "Godrej Properties" }
+      - { ticker: OBEROIRLTY.NS, name: "Oberoi Realty" }
+      - { ticker: PRESTIGE.NS,   name: "Prestige Estates" }
+    chemicals_and_specialty:
+      - { ticker: PIDILITIND.NS, name: "Pidilite Industries" }
+      - { ticker: SRF.NS,        name: "SRF" }
+      - { ticker: ATUL.NS,       name: "Atul Ltd" }
+      - { ticker: DEEPAKNTR.NS,  name: "Deepak Nitrite" }
+    media_and_entertainment:
+      - { ticker: ZEEL.NS,       name: "Zee Entertainment" }
+      - { ticker: PVRINOX.NS,    name: "PVR INOX" }
+    aviation:
+      - { ticker: INDIGO.NS,     name: "InterGlobe Aviation (IndiGo)" }
+    exchanges_and_misc_financials:
+      - { ticker: BSE.NS,        name: "BSE (Bombay Stock Exchange)" }
+      - { ticker: CDSL.NS,       name: "Central Depository Services" }
+      - { ticker: MCX.NS,        name: "Multi Commodity Exchange" }
