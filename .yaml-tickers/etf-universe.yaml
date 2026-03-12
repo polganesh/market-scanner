@@ -1,0 +1,195 @@
+etf_universe:
+  metadata:
+    name: "Comprehensive ETF Universe — Master Refactored"
+    version: "1.2"
+    last_updated: 2026-03-12
+
+  broad_market_indices_india:
+    nifty_core:
+      - { ticker: NIFTYBEES.NS, name: "Nippon India ETF Nifty 50 BeES" }
+      - { ticker: JUNIORBEES.NS, name: "Nippon India ETF Nifty Next 50 BeES" }
+      - { ticker: ICICINIFTY.NS, name: "ICICI Prudential Nifty 50 ETF" }
+    mid_small_cap:
+      - { ticker: MID150BEES.NS, name: "Nippon India ETF Nifty Midcap 150" }
+      - { ticker: M150ETF.NS,    name: "Mirae Asset Nifty Midcap 150 ETF" }
+      - { ticker: NETFSMALL250.NS, name: "Nippon India ETF Nifty Smallcap 250" }
+
+  geography_international_india:
+    usa_tech:
+      - { ticker: MON100.NS,    name: "Motilal Oswal Nasdaq 100 ETF" }
+      - { ticker: MAFANG.NS,    name: "Mirae Asset NYSE FANG+ ETF" }
+      - { ticker: MASPTOP50.NS, name: "Mirae Asset S&P 500 Top 50 ETF" }
+    hong_kong:
+      - { ticker: HNGSNGBEES.NS, name: "Nippon India ETF Hang Seng BeES" }
+
+  sectors_equity_india:
+    banking_financials:
+      - { ticker: BANKBEES.NS,   name: "Nippon India ETF Nifty Bank BeES" }
+      - { ticker: PSFBNKBEES.NS, name: "Nippon India ETF Nifty PSU Bank BeES" }
+      - { ticker: PVTBANIETF.NS, name: "ICICI Prudential Nifty Private Bank ETF" }
+    technology_healthcare:
+      - { ticker: ITBEES.NS,     name: "Nippon India ETF Nifty IT BeES" }
+      - { ticker: PHARMABEES.NS, name: "Nippon India ETF Nifty Pharma BeES" }
+    consumption_auto:
+      - { ticker: CONSUMBEES.NS, name: "Nippon India ETF Nifty Consumption BeES" }
+      - { ticker: AUTOBEES.NS,   name: "Nippon India ETF Nifty Auto BeES" }
+      - { ticker: FMCGBEES.NS,   name: "Nippon India ETF Nifty FMCG BeES" }
+
+  thematic_india:
+    manufacturing_defense:
+      - { ticker: DEFENCE.NS,    name: "HDFC Nifty Defence ETF" }
+      - { ticker: MAHKMANU.NS,   name: "Mirae Asset Nifty India Manufacturing ETF" }
+      - { ticker: MAKEINDIA.NS,  name: "Nippon India ETF Nifty India Consumption" }
+    ev_new_age:
+      - { ticker: EVINDIA.NS,    name: "Mirae Asset Nifty EV & New Age Automotive ETF" }
+
+  # --- COMMODITIES & DEBT ---
+  commodities_india:
+    gold_silver:
+      - { ticker: GOLDBEES.NS,   name: "Nippon India ETF Gold BeES" }
+      - { ticker: SILVERBEES.NS, name: "Nippon India ETF Silver BeES" }
+
+
+  # --- CORE BROAD MARKET INDICES ---
+  broad_market_indices:
+    global_developed:
+      - { ticker: URTH,  name: "iShares MSCI World ETF" }
+      - { ticker: ACWI,  name: "iShares MSCI ACWI ETF (Global Developed & Emerging)" }
+      - { ticker: VEA,   name: "Vanguard Developed Markets ETF" }
+    emerging_markets:
+      - { ticker: VWO,   name: "Vanguard FTSE Emerging Markets ETF" }
+      - { ticker: EEM,   name: "iShares MSCI Emerging Markets ETF" }
+      - { ticker: SMIN,  name: "iShares MSCI India Small-Cap ETF" } # Added India Small Cap
+    hong_kong_china_core:
+      - { ticker: EWH,   name: "iShares MSCI Hong Kong ETF (US-Listed)" }
+      - { ticker: 2833.HK, name: "Hang Seng Index Tracking Fund (HK-Listed)" }
+      - { ticker: 3067.HK, name: "iShares Hang Seng TECH ETF (HK-Listed)" }
+
+  # --- GEOGRAPHIC EQUITIES ---
+  geography:
+    north_america:
+      usa:
+        - { ticker: SPY,   name: "SPDR S&P 500 ETF Trust" }
+        - { ticker: QQQ,   name: "Invesco QQQ Trust (Nasdaq 100)" }
+        - { ticker: IWM,   name: "iShares Russell 2000 (Small Cap)" }
+      canada:
+        - { ticker: EWC,   name: "iShares MSCI Canada ETF" }
+      mexico:
+        - { ticker: EWW,   name: "iShares MSCI Mexico ETF" }
+    europe:
+      broad:
+        - { ticker: FEZ,   name: "SPDR EURO STOXX 50 ETF" }
+        - { ticker: VGK,   name: "Vanguard FTSE Europe ETF" }
+      germany:
+        - { ticker: EWG,   name: "iShares MSCI Germany ETF" }
+        - germany_manufacturing:
+            - { ticker: EWG,   name: "iShares MSCI Germany ETF" } # Heavy Manufacturing/Export focus
+            - { ticker: DAX,   name: "Global X DAX Germany ETF" } # Prime Manufacturing Index
+      united_kingdom:
+        - { ticker: EWU,   name: "iShares MSCI United Kingdom ETF" }
+      france:
+        - { ticker: EWQ,   name: "iShares MSCI France ETF" }
+      greece:
+        - { ticker: GREK,  name: "Global X MSCI Greece ETF" }
+    asia_pacific_asean:
+      broad_asean:
+        - { ticker: ASEA,  name: "Global X FTSE Southeast Asia ETF" }
+      japan:
+        - { ticker: EWJ,   name: "iShares MSCI Japan ETF" }
+      china:
+        - { ticker: MCHI,  name: "iShares MSCI China ETF" }
+        - { ticker: FXI,   name: "iShares China Large-Cap ETF" }
+      india:
+        - { ticker: INDA,  name: "iShares MSCI India ETF" }
+        - { ticker: EPI,   name: "WisdomTree India Earnings Fund" }
+      vietnam:
+        - { ticker: VNM,   name: "VanEck Vietnam ETF" }
+      indonesia:
+        - { ticker: EDO,   name: "iShares MSCI Indonesia ETF" }
+      taiwan_korea_aus:
+        - { ticker: EWT,   name: "iShares MSCI Taiwan ETF" }
+        - { ticker: EWY,   name: "iShares MSCI South Korea ETF" }
+        - { ticker: EWA,   name: "iShares MSCI Australia ETF" }
+      china_tech:
+        - { ticker: KWEB,  name: "KraneShares CSI China Internet ETF" } # Pure China Tech
+        - { ticker: CQQQ,  name: "Invesco China Technology ETF" }
+      india_tech_smallcap:
+        - { ticker: INQQ,  name: "India Internet & Ecommerce ETF" } # India Tech
+        - { ticker: SMIN,  name: "iShares MSCI India Small-Cap ETF" } # India Small Cap  -
+    middle_east_africa:
+      israel:
+        - { ticker: EIS,   name: "iShares MSCI Israel ETF" }
+      turkey:
+        - { ticker: TUR,   name: "iShares MSCI Turkey ETF" }
+      saudi_arabia:
+        - { ticker: KSA,   name: "iShares MSCI Saudi Arabia ETF" }
+      south_africa:
+        - { ticker: EZA,   name: "iShares MSCI South Africa ETF" }
+    latin_america:
+      broad:
+        - { ticker: ILF,   name: "iShares Latin America 40 ETF" }
+      brazil_chile_arg:
+        - { ticker: EWZ,   name: "iShares MSCI Brazil ETF" }
+        - { ticker: ECH,   name: "iShares MSCI Chile ETF" }
+        - { ticker: ARGT,  name: "Global X MSCI Argentina ETF" }
+
+  # --- SECTOR & THEMATIC ---
+  sectors_equity:
+    technology:
+      - { ticker: XLK,   name: "Technology Select Sector SPDR" }
+      - { ticker: SMH,   name: "VanEck Semiconductor ETF" }
+    financials:
+      - { ticker: XLF,   name: "Financial Select Sector SPDR" }
+      - { ticker: KBE,   name: "SPDR S&P Bank ETF" }
+    healthcare:
+      - { ticker: XLV,   name: "Health Care Select Sector SPDR" }
+      - { ticker: XBI,   name: "SPDR S&P Biotech ETF" }
+    energy_utilities:
+      - { ticker: XLE,   name: "Energy Select Sector SPDR" }
+      - { ticker: XLU,   name: "Utilities Select Sector SPDR" }
+    industrials_defense:
+      - { ticker: XLI,   name: "Industrials Select Sector SPDR" }
+      - { ticker: ITA,   name: "iShares US Aerospace & Defense" }
+
+  thematic_megatrends:
+    ai_robotics:
+      - { ticker: AIQ,   name: "Global X AI & Technology ETF" }
+      - { ticker: BOTZ,  name: "Global X Robotics & AI ETF" }
+    cloud_cyber:
+      - { ticker: CLOU,  name: "Global X Cloud Computing ETF" }
+      - { ticker: CIBR,  name: "First Trust Cybersecurity ETF" }
+    energy_transition:
+      - { ticker: URA,   name: "Global X Uranium ETF" }
+      - { ticker: NLR,   name: "VanEck Uranium+Nuclear Energy ETF" }
+      - { ticker: SRUUF, name: "Sprott Physical Uranium Trust" }
+      - { ticker: ICLN,  name: "iShares Global Clean Energy ETF" }
+      - { ticker: NUKZ,  name: "Range Nuclear Renaissance ETF" }
+    fintech_crypto:
+      - { ticker: FINX,  name: "Global X FinTech ETF" }
+      - { ticker: IBIT,  name: "iShares Bitcoin Trust (Spot)" }
+      - { ticker: ETHA,  name: "iShares Ethereum Trust" }
+
+  # --- REAL ASSETS & STRATEGY ---
+  commodities:
+    metals:
+      - { ticker: GLD,   name: "SPDR Gold Shares" }
+      - { ticker: SLV,   name: "iShares Silver Trust" }
+      - { ticker: CPER,  name: "United States Copper Index Fund" }
+      - { ticker: ALUM,  name: "iShares MSCI Aluminium ETF" }
+      - { ticker: DBB,   name: "Invesco DB Base Metals Fund (Zinc, Copper, Aluminum)" }
+    energy_agri_timber:
+      - { ticker: USO,   name: "United States Oil Fund (WTI)" }
+      - { ticker: UNG,   name: "United States Natural Gas Fund" }
+      - { ticker: BNO,   name: "United States Brent Oil Fund" }
+      - { ticker: DBA,   name: "Invesco DB Agriculture Fund" }
+      - { ticker: WOOD,  name: "iShares Global Timber & Forestry" }
+    broad_tracking:
+      - { ticker: DBC,   name: "Invesco DB Commodity Tracking" }
+
+  factor_strategies:
+    quality_dividend:
+      - { ticker: MOAT,  name: "VanEck Morningstar Wide Moat ETF" }
+      - { ticker: SCHD,  name: "Schwab US Dividend Equity ETF" }
+      - { ticker: COWZ,  name: "Pacer US Cash Cows 100 ETF" }
+    volatility_tail:
+      - { ticker: VIXY,  name: "ProShares VIX Short-Term Futures" }
